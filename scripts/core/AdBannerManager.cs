@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 
 namespace Wowsome.Ads {
   /// <summary>
-  /// WIP
+  /// Handles visibility of the banner ad for each scene in the game.
   /// </summary>
   public class AdBannerManager : MonoBehaviour, IAdsManager {
     [Serializable]
@@ -37,7 +37,7 @@ namespace Wowsome.Ads {
     bool _bannerShowing = false;
     Scene _curScene;
 
-    public bool ShouldShowBanner => _bannerLoaded && !_system.IsNoAds;
+    public bool ShouldShowBanner => _bannerLoaded && !_system.IsNoAds.Value;
 
     public SceneVisibility CurVisibility => visibilities.Find(x => x.Matches(_curScene));
 
@@ -45,9 +45,16 @@ namespace Wowsome.Ads {
 
     public void InitAdsManager(AdSystem adSystem) {
       _system = adSystem;
+      // observe IsNoAds value, 
+      // whenever it's true (normally when the ads have just been removed),
+      // we hide the banner
+      _system.IsNoAds.Subscribe(flag => {
+        if (flag) ShowBanner(false);
+      });
 
       _banner = GetComponent<IBanner>();
-      _banner?.InitBanner(() => {
+      Assert.Null(_banner, "cant find IBanner component in AdBannerManager");
+      _banner.InitBanner(() => {
         _bannerLoaded = true;
         TryShowOrHideBanner();
       });
@@ -58,7 +65,9 @@ namespace Wowsome.Ads {
       TryShowOrHideBanner();
     }
 
-    public void UpdateAdsManager(float dt) { }
+    public void UpdateAdsManager(float dt) {
+      _banner.UpdateBanner(dt);
+    }
 
     #endregion 
 
@@ -70,6 +79,12 @@ namespace Wowsome.Ads {
     }
 
     void TryShowOrHideBanner() {
+      // force hide, just in case it's still showing and it shouldn't show
+      if (!ShouldShowBanner) {
+        ShowBanner(false);
+        return;
+      }
+
       SceneVisibility visibility = CurVisibility;
       if (null != visibility) {
         ShowBanner(visibility.flag);

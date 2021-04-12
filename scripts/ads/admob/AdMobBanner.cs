@@ -2,15 +2,14 @@
 using GoogleMobileAds.Api;
 using GoogleMobileAds.Common;
 using UnityEngine;
+using Wowsome.Chrono;
 
 namespace Wowsome.Ads {
   public class AdMobBanner : MonoBehaviour, IBanner {
     [Serializable]
     public struct Model {
       public string UnitIdIOS;
-      public string AppIdIOS;
       public string UnitIdAndroid;
-      public string AppIdAndroid;
       public AdPosition Position;
 
       public string UnitId {
@@ -19,25 +18,26 @@ namespace Wowsome.Ads {
           return unitId.Trim();
         }
       }
-
-      public string AppId {
-        get {
-          string appId = Application.platform == RuntimePlatform.Android ? AppIdAndroid : AppIdIOS;
-          return appId.Trim();
-        }
-      }
     }
 
     public Model Data;
 
-    BannerView m_banner;
-    bool m_loading = false;
-    bool m_loaded = false;
-    Action m_onLoaded;
+    BannerView _banner;
+    bool _loading = false;
+    bool _loaded = false;
+    Action _onLoaded;
+    Timer _loadTimer = null;
 
     public void InitBanner(Action onLoaded) {
-      m_onLoaded = onLoaded;
+      _onLoaded = onLoaded;
       LoadBanner();
+    }
+
+    public void UpdateBanner(float dt) {
+      if (null != _loadTimer && !_loadTimer.UpdateTimer(dt)) {
+        _loadTimer = null;
+        LoadBanner();
+      }
     }
 
     public void ShowBanner(bool flag) {
@@ -45,22 +45,22 @@ namespace Wowsome.Ads {
       // the workaround is when hiding, we destroy it
       // then reload it again
       if (!flag) {
-        if (m_loaded) {
-          m_banner.Hide();
-          m_banner.Destroy();
-          m_loaded = false;
+        if (_loaded) {
+          _banner.Hide();
+          _banner.Destroy();
+          _loaded = false;
         }
       } else {
-        if (m_loaded) {
-          m_banner.Show();
-        } else if (!m_loading) {
+        if (_loaded) {
+          _banner.Show();
+        } else if (!_loading) {
           LoadBanner();
         }
       }
     }
 
     void LoadBanner() {
-      m_loading = true;
+      _loading = true;
       MobileAds.Initialize(OnInit);
     }
 
@@ -72,17 +72,17 @@ namespace Wowsome.Ads {
       MobileAdsEventExecutor.ExecuteInUpdate(() => {
         //load banner
         AdRequest request = new AdRequest.Builder().Build();
-        m_banner = new BannerView(Data.UnitId, AdSize.SmartBanner, Data.Position);
-        m_banner.OnAdLoaded += (sender, args) => {
-          m_loading = false;
-          m_loaded = true;
-          m_onLoaded();
+        _banner = new BannerView(Data.UnitId, AdSize.SmartBanner, Data.Position);
+        _banner.OnAdLoaded += (sender, args) => {
+          _loading = false;
+          _loaded = true;
+          _onLoaded();
         };
-        m_banner.OnAdFailedToLoad += (sender, e) => {
-          // reload if failed
-          LoadBanner();
+        _banner.OnAdFailedToLoad += (sender, e) => {
+          // on failed, delay 2 secs before re-loading again.
+          _loadTimer = new Timer(2f);
         };
-        m_banner.LoadAd(request);
+        _banner.LoadAd(request);
       });
     }
   }

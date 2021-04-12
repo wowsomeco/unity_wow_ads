@@ -11,7 +11,7 @@ namespace Wowsome.Ads {
     int _sceneChangesCounter = -1;
 
     public void Show() {
-      if (_system.IsNoAds) return;
+      if (_system.IsNoAds.Value) return;
 
       //try show
       if (_interstitials.Count > 0) {

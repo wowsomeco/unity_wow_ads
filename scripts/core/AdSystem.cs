@@ -1,19 +1,20 @@
 ﻿using UnityEngine;
 using Wowsome.Chrono;
 using Wowsome.Core;
+using Wowsome.Generic;
 
 namespace Wowsome.Ads {
   public class AdSystem : MonoBehaviour, ISystem {
     IAdsManager[] _adsManagers;
     Timer _delayInit = null;
 
-    public bool IsNoAds { get; set; }
+    public WObservable<bool> IsNoAds { get; private set; } = new WObservable<bool>();
 
     #region ISystem implementation
 
     public void InitSystem() {
       _adsManagers = GetComponentsInChildren<IAdsManager>(true);
-      _delayInit = new Timer(2f);
+      _delayInit = new Timer(1f);
     }
 
     public void StartSystem(CavEngine gameEngine) {
@@ -25,9 +26,13 @@ namespace Wowsome.Ads {
     }
 
     public void UpdateSystem(float dt) {
-      if (null != _delayInit && !_delayInit.UpdateTimer(dt)) {
-        _delayInit = null;
-        InitAdsManager();
+      if (null != _delayInit) {
+        if (!_delayInit.UpdateTimer(dt)) {
+          _delayInit = null;
+          InitAdsManager();
+        } else {
+          return;
+        }
       }
 
       for (int i = 0; i < _adsManagers.Length; ++i) {

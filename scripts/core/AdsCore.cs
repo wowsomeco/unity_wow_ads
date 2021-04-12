@@ -33,6 +33,7 @@ namespace Wowsome.Ads {
   public interface IBanner {
     void InitBanner(Action onLoaded);
     void ShowBanner(bool flag);
+    void UpdateBanner(float dt);
   }
 
   #endregion
