@@ -10,11 +10,12 @@ namespace Wowsome.Ads {
     public struct Model {
       public string UnitIdIOS;
       public string UnitIdAndroid;
+      public string UnitIdAmazon;
       public AdPosition Position;
 
       public string UnitId {
         get {
-          string unitId = Application.platform == RuntimePlatform.Android ? UnitIdAndroid : UnitIdIOS;
+          string unitId = PlatformUtil.GetStringByPlatform(UnitIdIOS, UnitIdAndroid, UnitIdAmazon);
           return unitId.Trim();
         }
       }
