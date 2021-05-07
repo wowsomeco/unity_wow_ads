@@ -15,6 +15,8 @@ namespace Wowsome.Ads {
     public string admobSettingsPath = "Assets/GoogleMobileAds/Resources/GoogleMobileAdsSettings.asset";
     public string googleAppId;
     public string amazonAppId;
+    public string googlePackageName;
+    public string amazonPackageName;
   }
 }
 

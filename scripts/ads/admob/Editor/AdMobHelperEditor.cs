@@ -13,9 +13,18 @@ namespace Wowsome.Ads {
 
       EU.VPadding(() => EditorGUILayout.LabelField($"Cur Android Platform: {AppSettings.AndroidPlatform}", EditorStyles.boldLabel));
       EU.Btn("Switch Android Platform", () => {
+        SwitchPackageName(tgt);
         SwitchAppSettingsPlatform(tgt);
         SwitchAdmobSettings(tgt);
       });
+    }
+
+    void SwitchPackageName(AdMobHelper tgt) {
+      // TODO: need to refactor this as the package name is not relevant to admob stuff(s)
+      // let's revisit this again later
+      string cur = AppSettings.AndroidPlatform == AndroidPlatform.Google ? tgt.amazonPackageName : tgt.googlePackageName;
+      PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.Android, cur.Trim());
+      EU.Refresh();
     }
 
     void SwitchAppSettingsPlatform(AdMobHelper tgt) {
