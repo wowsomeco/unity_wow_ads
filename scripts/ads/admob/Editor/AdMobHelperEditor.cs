@@ -16,6 +16,7 @@ namespace Wowsome.Ads {
         SwitchPackageName(tgt);
         SwitchAppSettingsPlatform(tgt);
         SwitchAdmobSettings(tgt);
+        EU.Save();
       });
     }
 
