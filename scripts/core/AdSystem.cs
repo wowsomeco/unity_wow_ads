@@ -14,6 +14,7 @@ namespace Wowsome.Ads {
 
     public void InitSystem() {
       _adsManagers = GetComponentsInChildren<IAdsManager>(true);
+      // some ads needs to delay the instantiation a tad. 
       _delayInit = new Timer(1f);
     }
 

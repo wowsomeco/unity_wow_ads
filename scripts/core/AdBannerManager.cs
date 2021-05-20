@@ -45,6 +45,7 @@ namespace Wowsome.Ads {
 
     public void InitAdsManager(AdSystem adSystem) {
       _system = adSystem;
+      if (_system.IsNoAds.Value) return;
       // observe IsNoAds value, 
       // whenever it's true (normally when the ads have just been removed),
       // we hide the banner
@@ -66,7 +67,7 @@ namespace Wowsome.Ads {
     }
 
     public void UpdateAdsManager(float dt) {
-      _banner.UpdateBanner(dt);
+      _banner?.UpdateBanner(dt);
     }
 
     #endregion 

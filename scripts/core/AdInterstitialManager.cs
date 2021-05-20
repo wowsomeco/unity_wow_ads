@@ -27,6 +27,8 @@ namespace Wowsome.Ads {
     public void InitAdsManager(AdSystem adSystem) {
       _system = adSystem;
 
+      if (_system.IsNoAds.Value) return;
+
       var interstitials = GetComponentsInChildren<IInterstitial>(true);
       foreach (IInterstitial inter in interstitials) {
         inter.InitInterstitial();
