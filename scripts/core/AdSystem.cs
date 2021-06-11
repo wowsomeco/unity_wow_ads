@@ -19,9 +19,9 @@ namespace Wowsome.Ads {
     }
 
     public void StartSystem(CavEngine gameEngine) {
-      gameEngine.OnChangeScene += scene => {
+      gameEngine.OnChangeScene += ev => {
         foreach (IAdsManager m in _adsManagers) {
-          m.SceneChanges(scene);
+          m.SceneChanges(ev.Scene);
         }
       };
     }
