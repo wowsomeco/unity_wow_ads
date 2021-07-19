@@ -12,13 +12,13 @@ namespace Wowsome.Ads {
 
     #region ISystem implementation
 
-    public void InitSystem() {
+    public virtual void InitSystem() {
       _adsManagers = GetComponentsInChildren<IAdsManager>(true);
       // some ads needs to delay the instantiation a tad. 
       _delayInit = new Timer(1f);
     }
 
-    public void StartSystem(CavEngine gameEngine) {
+    public virtual void StartSystem(CavEngine gameEngine) {
       gameEngine.OnChangeScene += ev => {
         foreach (IAdsManager m in _adsManagers) {
           m.SceneChanges(ev.Scene);
@@ -26,7 +26,7 @@ namespace Wowsome.Ads {
       };
     }
 
-    public void UpdateSystem(float dt) {
+    public virtual void UpdateSystem(float dt) {
       if (null != _delayInit) {
         if (!_delayInit.UpdateTimer(dt)) {
           _delayInit = null;
