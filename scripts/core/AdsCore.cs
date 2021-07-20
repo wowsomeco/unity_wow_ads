@@ -18,12 +18,10 @@ namespace Wowsome.Ads {
   #region Rewarded
 
   public interface IReward {
+    Action OnRewarded { get; set; }
     int Order { get; }
-    bool ShowReward(IRewardAdListener listener);
-  }
-
-  public interface IRewardAdListener {
-    void OnRewarded();
+    void InitReward();
+    bool ShowReward();
   }
 
   #endregion

@@ -13,7 +13,7 @@ namespace Wowsome.Ads {
     public void Show() {
       if (_system.IsNoAds.Value) return;
 
-      //try show
+      // try show
       if (_interstitials.Count > 0) {
         foreach (IInterstitial inter in _interstitials) {
           if (inter.ShowInterstitial()) {
