@@ -73,7 +73,7 @@ namespace Wowsome.Ads {
     #endregion 
 
     void ShowBanner(bool flag) {
-      if (!_bannerLoaded) return;
+      if (!_bannerLoaded || (_bannerShowing == flag)) return;
 
       _bannerShowing = flag;
       _banner.ShowBanner(flag);
