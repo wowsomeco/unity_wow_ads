@@ -18,7 +18,7 @@ namespace Wowsome.Ads {
       _delayInit = new Timer(1f);
     }
 
-    public virtual void StartSystem(CavEngine gameEngine) {
+    public virtual void StartSystem(WEngine gameEngine) {
       gameEngine.OnChangeScene += ev => {
         foreach (IAdsManager m in _adsManagers) {
           m.SceneChanges(ev.Scene);
