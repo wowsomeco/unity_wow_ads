@@ -4,26 +4,22 @@ using UnityEngine.SceneManagement;
 
 namespace Wowsome.Ads {
   public class AdInterstitialManager : MonoBehaviour, IAdsManager {
-    public int SceneChangesToShow;
-
     AdSystem _system;
     List<IInterstitial> _interstitials = new List<IInterstitial>();
-    int _sceneChangesCounter = -1;
 
     public void Show() {
       if (_system.IsNoAds.Value) return;
 
       // try show
-      if (_interstitials.Count > 0) {
-        foreach (IInterstitial inter in _interstitials) {
-          if (inter.ShowInterstitial()) {
-            break;
-          }
+      foreach (IInterstitial inter in _interstitials) {
+        if (inter.ShowInterstitial()) {
+          break;
         }
       }
     }
 
     #region IAdsManager
+
     public void InitAdsManager(AdSystem adSystem) {
       _system = adSystem;
 
@@ -39,11 +35,6 @@ namespace Wowsome.Ads {
     }
 
     public void SceneChanges(Scene scene) {
-      ++_sceneChangesCounter;
-      if (_sceneChangesCounter > SceneChangesToShow) {
-        _sceneChangesCounter = 0;
-        Show();
-      }
     }
 
     public void UpdateAdsManager(float dt) {
@@ -51,6 +42,7 @@ namespace Wowsome.Ads {
         inter.UpdateInterstitial(dt);
       }
     }
+
     #endregion
   }
 }
