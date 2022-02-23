@@ -38,7 +38,7 @@ namespace Wowsome.Ads {
 
   public interface IAdsManager {
     void InitAdsManager(AdSystem adSystem);
-    void SceneChanges(Scene curScene);
+    void OnSceneChange(Scene curScene);
     void UpdateAdsManager(float dt);
   }
 }

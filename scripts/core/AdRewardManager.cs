@@ -31,7 +31,7 @@ namespace Wowsome.Ads {
     public void InitAdsManager(AdSystem adSystem) {
       _system = adSystem;
 
-      if (_system.IsNoAds.Value) return;
+      if (_system.IsDisabled.Value) return;
 
       var rewards = GetComponentsInChildren<IReward>(true);
       foreach (IReward reward in rewards) {
@@ -53,7 +53,7 @@ namespace Wowsome.Ads {
       }
     }
 
-    public void SceneChanges(Scene curScene) { }
+    public void OnSceneChange(Scene curScene) { }
 
     #endregion    
   }

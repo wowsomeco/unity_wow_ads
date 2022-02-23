@@ -8,7 +8,7 @@ namespace Wowsome.Ads {
     List<IInterstitial> _interstitials = new List<IInterstitial>();
 
     public void Show() {
-      if (_system.IsNoAds.Value) return;
+      if (_system.IsDisabled.Value) return;
 
       // try show
       foreach (IInterstitial inter in _interstitials) {
@@ -23,7 +23,7 @@ namespace Wowsome.Ads {
     public void InitAdsManager(AdSystem adSystem) {
       _system = adSystem;
 
-      if (_system.IsNoAds.Value) return;
+      if (_system.IsDisabled.Value) return;
 
       var interstitials = GetComponentsInChildren<IInterstitial>(true);
       foreach (IInterstitial inter in interstitials) {
@@ -34,7 +34,7 @@ namespace Wowsome.Ads {
       _interstitials.Sort((x, y) => x.Order < y.Order ? -1 : 1);
     }
 
-    public void SceneChanges(Scene scene) {
+    public void OnSceneChange(Scene scene) {
     }
 
     public void UpdateAdsManager(float dt) {

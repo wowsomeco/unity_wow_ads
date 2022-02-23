@@ -4,24 +4,24 @@ using Wowsome.Generic;
 
 namespace Wowsome.Ads {
   public class AdSystem : MonoBehaviour, ISystem {
-    public WObservable<bool> IsNoAds { get; private set; } = new WObservable<bool>();
+    public WObservable<bool> IsDisabled { get; private set; } = new WObservable<bool>();
 
     IAdsManager[] _adsManagers;
 
     #region ISystem implementation
 
-    public virtual void InitSystem() {
+    public virtual void InitSystem() { }
+
+    public virtual void StartSystem(WEngine gameEngine) {
       _adsManagers = GetComponentsInChildren<IAdsManager>(true);
 
       foreach (IAdsManager m in _adsManagers) {
         m.InitAdsManager(this);
       }
-    }
 
-    public virtual void StartSystem(WEngine gameEngine) {
       gameEngine.OnChangeScene += ev => {
         foreach (IAdsManager m in _adsManagers) {
-          m.SceneChanges(ev.Scene);
+          m.OnSceneChange(ev.Scene);
         }
       };
     }

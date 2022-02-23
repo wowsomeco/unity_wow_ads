@@ -37,7 +37,7 @@ namespace Wowsome.Ads {
     bool _bannerShowing = false;
     Scene _curScene;
 
-    public bool ShouldShowBanner => _bannerLoaded && !_system.IsNoAds.Value;
+    public bool ShouldShowBanner => _bannerLoaded && !_system.IsDisabled.Value;
 
     public SceneVisibility CurVisibility => visibilities.Find(x => x.Matches(_curScene));
 
@@ -45,23 +45,27 @@ namespace Wowsome.Ads {
 
     public void InitAdsManager(AdSystem adSystem) {
       _system = adSystem;
-      if (_system.IsNoAds.Value) return;
+      if (_system.IsDisabled.Value) return;
       // observe IsNoAds value, 
       // whenever it's true (normally when the ads have just been removed),
       // we hide the banner
-      _system.IsNoAds.Subscribe(flag => {
+      _system.IsDisabled.Subscribe(flag => {
+        Print.Log(() => "cyan", flag, "remove banner");
+
         if (flag) ShowBanner(false);
       });
 
       _banner = GetComponent<IBanner>();
       Assert.Null(_banner, "cant find IBanner component in AdBannerManager");
       _banner.InitBanner(() => {
+        Print.Log(() => "cyan", "banner loaded");
+
         _bannerLoaded = true;
         TryShowOrHideBanner();
       });
     }
 
-    public void SceneChanges(Scene scene) {
+    public void OnSceneChange(Scene scene) {
       _curScene = scene;
       TryShowOrHideBanner();
     }
