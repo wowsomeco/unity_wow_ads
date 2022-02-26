@@ -7,23 +7,34 @@ using Wowsome.Chrono;
 namespace Wowsome.Ads {
   public class AdRewardManager : MonoBehaviour, IAdsManager {
     public bool HasInitialized { get; private set; }
+    public bool HasAnyLoaded {
+      get {
+        foreach (IReward r in _rewards) {
+          if (r.IsLoaded) return true;
+        }
+
+        return false;
+      }
+    }
 
     List<IReward> _rewards = new List<IReward>();
     Timer _rewardedTimer;
     AdSystem _system;
     Action _onRewarded;
 
-    public void Show(Action onRewarded) {
+    public bool Show(Action onRewarded) {
       // try show
       if (_rewards.Count > 0) {
         _onRewarded = onRewarded;
 
         foreach (IReward reward in _rewards) {
           if (reward.ShowReward()) {
-            break;
+            return true;
           }
         }
       }
+
+      return false;
     }
 
     #region IAdsManager

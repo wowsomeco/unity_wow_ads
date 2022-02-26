@@ -18,6 +18,7 @@ namespace Wowsome.Ads {
   #region Rewarded
 
   public interface IReward {
+    bool IsLoaded { get; }
     Action OnRewarded { get; set; }
     int Order { get; }
     void InitReward();
