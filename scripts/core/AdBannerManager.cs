@@ -34,7 +34,6 @@ namespace Wowsome.Ads {
     AdSystem _system;
     IBanner _banner = null;
     bool _bannerLoaded = false;
-    bool _bannerShowing = false;
     Scene _curScene;
 
     public bool ShouldShowBanner => _bannerLoaded && !_system.IsDisabled.Value;
@@ -57,10 +56,12 @@ namespace Wowsome.Ads {
 
       _banner = GetComponent<IBanner>();
       Assert.Null(_banner, "cant find IBanner component in AdBannerManager");
+
       _banner.InitBanner(() => {
         Print.Log(() => "cyan", "banner loaded");
 
         _bannerLoaded = true;
+
         TryShowOrHideBanner();
       });
     }
@@ -79,7 +80,6 @@ namespace Wowsome.Ads {
     void ShowBanner(bool flag) {
       if (!_bannerLoaded) return;
 
-      _bannerShowing = flag;
       _banner.ShowBanner(flag);
     }
 
@@ -87,6 +87,7 @@ namespace Wowsome.Ads {
       // force hide, just in case it's still showing and it shouldn't show
       if (!ShouldShowBanner) {
         ShowBanner(false);
+
         return;
       }
 
