@@ -11,37 +11,20 @@ namespace Wowsome.Ads {
     public WObservable<bool> IsDisabled { get; private set; } = new WObservable<bool>();
 
     List<WAdsProviderBase> _adsProviders = new List<WAdsProviderBase>();
+    Dictionary<AdType, AdPool> _adPools = new Dictionary<AdType, AdPool> {
+      { AdType.Banner, new AdPool(AdType.Banner) },
+      { AdType.Interstitial, new AdPool(AdType.Interstitial) },
+      { AdType.Rewarded, new AdPool(AdType.Rewarded) }
+    };
 
     public bool IsAvailable(AdType type) {
-      return GetLoadedAd(type) != null;
-    }
-
-    public IAd GetLoadedAd(AdType type) {
-      foreach (WAdsProviderBase ap in _adsProviders) {
-        if (ap.IsInitialized.Value && ap.GetAdByType(type) is IAd ad) {
-          if (ad.IsLoaded.Value) {
-            return ad;
-          }
-        }
-      }
-
-      return null;
+      return _adPools[type].GetAvailableAd() != null;
     }
 
     public bool Show(AdType type, Action onComplete = null) {
-      if (GetLoadedAd(type) is IAd ad) {
-        Print.Log(() => "cyan", "Show Ad:", ad, type);
+      if (IsDisabled.Value) return false;
 
-        return ad.ShowAd(onComplete);
-      }
-
-      return false;
-    }
-
-    public bool IsLoaded(AdType type) {
-      if (GetLoadedAd(type) is IAd ad) return true;
-
-      return false;
+      return _adPools[type].Show(onComplete);
     }
 
     public T GetProvider<T>(bool assertIfNull = true) where T : class, IAdsProvider {
@@ -62,12 +45,13 @@ namespace Wowsome.Ads {
     public virtual void InitSystem() { }
 
     public virtual void StartSystem(WEngine gameEngine) {
+      OnAdLoaded += ad => {
+        _adPools[ad.Type].Add(ad);
+      };
+
       _adsProviders = gameObject.GetComponentsInChildrenWithCallback<WAdsProviderBase>(true, ap => {
         ap.InitAdsProvider(this);
       });
-
-      // sort by priority
-      _adsProviders.Sort((x, y) => x.Priority < y.Priority ? -1 : 1);
     }
 
     public virtual void UpdateSystem(float dt) { }

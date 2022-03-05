@@ -1,14 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using Wowsome.Generic;
 
 namespace Wowsome.Ads {
   public class WAdsProviderBase : MonoBehaviour, IAdsProvider {
-    public int Priority => priority;
+    public bool IsTestMode => isTestMode;
     public WObservable<bool> IsInitialized { get; private set; } = new WObservable<bool>(false);
 
-    public int priority;
+    public bool isDisabled;
+    public bool isTestMode;
 
     protected WAdSystem _adSystem;
     protected List<IAd> _ads = new List<IAd>();
