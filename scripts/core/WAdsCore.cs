@@ -41,6 +41,9 @@ namespace Wowsome.Ads {
     }
 
     public bool Show(Action onDone = null) {
+      // bail if nothing to show yet
+      if (_ads.Count == 0) return false;
+
       IAd curAd = _ads[_curIdx];
       if (curAd.IsLoaded.Value) {
         curAd.ShowAd(onDone);
