@@ -13,6 +13,7 @@ namespace Wowsome.Ads {
   }
 
   public interface IAd {
+    int Priority { get; }
     WObservable<bool> IsLoaded { get; }
     AdType Type { get; }
     bool ShowAd(Action onDone = null);
@@ -27,7 +28,6 @@ namespace Wowsome.Ads {
       Type = t;
     }
 
-    int _curIdx = 0;
     List<IAd> _ads = new List<IAd>();
 
     public IAd GetAvailableAd() {
@@ -44,17 +44,13 @@ namespace Wowsome.Ads {
       // bail if nothing to show yet
       if (_ads.Count == 0) return false;
 
-      IAd curAd = _ads[_curIdx];
-      if (curAd.IsLoaded.Value) {
-        curAd.ShowAd(onDone);
+      _ads.Sort((x, y) => x.Priority < y.Priority ? -1 : 1);
 
-        _curIdx = GetNextIdx();
+      foreach (IAd ad in _ads) {
+        if (ad.IsLoaded.Value) {
+          ad.ShowAd(onDone);
 
-        return true;
-      } else {
-        // if next idx is not the current ad that is trying to show...
-        if (GetNextIdx() != _curIdx) {
-          return Show(onDone);
+          return true;
         }
       }
 
@@ -68,14 +64,6 @@ namespace Wowsome.Ads {
       }
 
       return false;
-    }
-
-    int GetNextIdx() {
-      int next = _curIdx + 1;
-
-      if (next >= _ads.Count) next = 0;
-
-      return next;
     }
   }
 }
