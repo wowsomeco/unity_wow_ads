@@ -5,7 +5,7 @@ using Wowsome.Core;
 using Wowsome.Generic;
 
 namespace Wowsome.Ads {
-  public class WAdSystem : MonoBehaviour, ISystem {
+  public class WAdSystem : MonoBehaviour, IAdSystem {
     public Action<IAd> OnAdLoaded { get; set; }
     public Action<IAd> OnAdUnloaded { get; set; }
     public WObservable<bool> IsDisabled { get; private set; } = new WObservable<bool>();

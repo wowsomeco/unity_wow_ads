@@ -1,10 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using Wowsome.Core;
 using Wowsome.Generic;
 
 namespace Wowsome.Ads {
   public enum AdType {
     Interstitial, Rewarded, Banner
+  }
+
+  public interface IAdSystem : ISystem {
+    WObservable<bool> IsDisabled { get; }
+    bool Show(AdType type, Action onComplete = null);
+    bool IsAvailable(AdType type);
   }
 
   public interface IAdsProvider {
