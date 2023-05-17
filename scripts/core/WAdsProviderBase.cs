@@ -1,11 +1,10 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using Wowsome.Generic;
 
 namespace Wowsome.Ads {
-  public class WAdsProviderBase : MonoBehaviour, IAdsProvider {
+  public abstract class WAdsProviderBase : MonoBehaviour, IAdsProvider {
     public bool IsTestMode => isTestMode;
-    public WObservable<bool> IsInitialized { get; private set; } = new WObservable<bool>(false);
+    public abstract string Id { get; }
 
     public bool isDisabled;
     public bool isTestMode;
@@ -30,7 +29,7 @@ namespace Wowsome.Ads {
     }
 
     protected void InitAds() {
-      IsInitialized.Next(true);
+      _adSystem.OnAdManagerInitialized?.Invoke(Id);
 
       for (int i = 0; i < _ads.Count; ++i) {
         IAd ad = _ads[i];

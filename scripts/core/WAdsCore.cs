@@ -5,7 +5,10 @@ using Wowsome.Generic;
 
 namespace Wowsome.Ads {
   public enum AdType {
-    Interstitial, Rewarded, Banner
+    Interstitial,
+    Rewarded,
+    Banner,
+    OpenAd
   }
 
   public interface IAdSystem : ISystem {
