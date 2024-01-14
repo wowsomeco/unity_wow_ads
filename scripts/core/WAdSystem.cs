@@ -22,10 +22,10 @@ namespace Wowsome.Ads {
       return _adPools[type].GetAvailableAd() != null;
     }
 
-    public bool Show(AdType type, Action onComplete = null) {
+    public bool Show(AdType type, Action onComplete = null, Action onError = null) {
       if (IsDisabled.Value) return false;
 
-      return _adPools[type].Show(onComplete);
+      return _adPools[type].Show(onComplete, onError);
     }
 
     public T GetProvider<T>(bool assertIfNull = true) where T : class, IAdsProvider {

@@ -13,7 +13,7 @@ namespace Wowsome.Ads {
 
   public interface IAdSystem : ISystem {
     WObservable<bool> IsDisabled { get; }
-    bool Show(AdType type, Action onComplete = null);
+    bool Show(AdType type, Action onComplete = null, Action onError = null);
     bool IsAvailable(AdType type);
   }
 
@@ -26,7 +26,7 @@ namespace Wowsome.Ads {
     int Priority { get; }
     WObservable<bool> IsLoaded { get; }
     AdType Type { get; }
-    bool ShowAd(Action onDone = null);
+    bool ShowAd(Action onDone = null, Action onError = null);
     void InitAd(IAdsProvider provider);
     void OnDisabled();
   }
@@ -50,7 +50,7 @@ namespace Wowsome.Ads {
       return null;
     }
 
-    public bool Show(Action onDone = null) {
+    public bool Show(Action onDone = null, Action onError = null) {
       // bail if nothing to show yet
       if (_ads.Count == 0) return false;
 
@@ -58,7 +58,7 @@ namespace Wowsome.Ads {
 
       foreach (IAd ad in _ads) {
         if (ad.IsLoaded.Value) {
-          ad.ShowAd(onDone);
+          ad.ShowAd(onDone, onError);
 
           return true;
         }
